@@ -42,10 +42,10 @@
     service:
       name: haproxy
       state: started
-  #- name: configure haproxy
-  #  template:
-  #    src: ./haproxy.cfg.j2
-  #    dest: /etc/haproxy/haproxy.cfg
+  - name: configure haproxy
+    template:
+      src: ./haproxy.cfg.j2
+      dest: /etc/haproxy/haproxy.cfg
   - name: restart HAproxy
     service:
       name: haproxy
@@ -106,38 +106,31 @@
       dest: /usr/share/tomcat/webapps/ansible/index.html
 
 - name: deploy postgres
-  #hosts: apps
+  hosts: apps
   gather_facts: false
   become: true
   hosts: appdbs
   tasks:
-  - name: install postgres
-    #command: "yum install -y postgresql-server"
-    yum:
-      name: postgresql-server
-      state: latest
+  - name: install progress
+    command: "yum install -y postgresql-server"
 
   #- name: install postgres
   #  yum:
   #    name: postgresql-server
   #    state: latest
-  - name: enable postgresql at boot
+  - name: enable apache at boot
     service:
       name: postgresql
       enabled: yes
-  #- name: tell user to finish setting up postgres
-  #  debug:
-  #    msg: "Either uncomment the postgres setup or manually login and initialize"
+  - name: tell user to finish setting up postgres
+    debug:
+      msg: "Either uncomment the postgres setup or manually login and initialize"
 
-  # only run the next 2 tasks once!
-##  - name: initilize postgres
-##    command: postgresql-setup initdb
-##    run_once: true
-
-  #- name: initilize postgres some more
-  #  command: chkconfig postgresql on
-  #  run_once: true
-
+ # only run the next 2 tasks once!
+#  - name: initilize postgres
+#    command: postgresql-setup initdb
+#  - name: initilize postgres some more
+#    command: chkconfig postgresql on
   - name: start postgres
     service:
       name: postgresql.service
@@ -147,6 +140,7 @@
   hosts: apps
   gather_facts: false
   become: true
+  hosts: apps
   tasks:
   - name: install apache
     yum:
@@ -156,7 +150,7 @@
     service:
       name: httpd
       enabled: yes
-  - name: start apache
-    service:
-      name: httpd
-      state: started
+#  - name: start apache
+#    service:
+#      name: httpd
+#      state: started

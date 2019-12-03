@@ -42,10 +42,10 @@
     service:
       name: haproxy
       state: started
-  #- name: configure haproxy
-  #  template:
-  #    src: ./haproxy.cfg.j2
-  #    dest: /etc/haproxy/haproxy.cfg
+  - name: configure haproxy
+    template:
+      src: ./haproxy.cfg.j2
+      dest: /etc/haproxy/haproxy.cfg
   - name: restart HAproxy
     service:
       name: haproxy
@@ -111,7 +111,7 @@
   become: true
   hosts: appdbs
   tasks:
-  - name: install postgres
+  - name: install progress
     #command: "yum install -y postgresql-server"
     yum:
       name: postgresql-server
@@ -130,13 +130,13 @@
   #    msg: "Either uncomment the postgres setup or manually login and initialize"
 
   # only run the next 2 tasks once!
-##  - name: initilize postgres
-##    command: postgresql-setup initdb
-##    run_once: true
+  - name: initilize postgres
+    command: postgresql-setup initdb
+    run_once: true
 
-  #- name: initilize postgres some more
-  #  command: chkconfig postgresql on
-  #  run_once: true
+  - name: initilize postgres some more
+    command: chkconfig postgresql on
+    run_once: true
 
   - name: start postgres
     service:
@@ -147,6 +147,7 @@
   hosts: apps
   gather_facts: false
   become: true
+  hosts: apps
   tasks:
   - name: install apache
     yum:
@@ -156,7 +157,7 @@
     service:
       name: httpd
       enabled: yes
-  - name: start apache
-    service:
-      name: httpd
-      state: started
+#  - name: start apache
+#    service:
+#      name: httpd
+#      state: started
